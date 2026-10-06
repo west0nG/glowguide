@@ -1,0 +1,13 @@
+.git/
+.vercel/
+.trellis/
+.agents/
+.codex/
+node_modules/
+dist/
+output/
+tests/
+.env*
+.DS_Store
+AGENTS.md
+README.md

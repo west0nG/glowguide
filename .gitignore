@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.DS_Store
+.env*
+!.env.example
+output/
+.vercel/
+
+# Local development tooling and workspace records
+.trellis/
+.agents/
+.codex/
+AGENTS.md

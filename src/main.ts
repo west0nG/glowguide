@@ -1,6 +1,7 @@
 import '@fontsource/dm-sans/latin-400.css';
 import '@fontsource/dm-sans/latin-500.css';
 import '@fontsource/dm-sans/latin-600.css';
+import '@fontsource/jost/latin-400.css';
 import './style.css';
 import { categories, categoryLabels, ingredientOriginLabels, getProduct, products, recommend, searchProducts, selectProduct } from './catalog';
 import type { Category, Product } from './catalog';

@@ -26,7 +26,7 @@ Node 22.13+ or 24+ is recommended for the TypeScript test runner. The current wo
 
 The reference canvas is the 11-inch iPad: **820 × 1180 CSS pixels** in portrait and **1180 × 820** in landscape. On touch devices, the app fills the available browser viewport, including safe-area spacing. Portrait uses three product columns; landscape uses four, with larger text and controls throughout.
 
-On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and bottom navigation stay in place while the content scrolls. Smaller touch screens retain a two-column fallback.
+On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and navigation stay in place while the content scrolls. At app widths of 768px and above, Discover, Scan, and Compare sit in a 96px left navigation rail; narrower layouts use bottom navigation. The selected page has a pale pink background in the rail, and Scan opens the existing scanner dialog. Smaller touch screens retain a two-column fallback.
 
 ## Try the prototype
 

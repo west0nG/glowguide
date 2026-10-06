@@ -33,7 +33,7 @@ function header(back = false, title = ''): string {
 }
 
 function navigation(): string {
-  return `<nav class="bottom-nav" aria-label="Main navigation">
+  return `<nav class="app-nav" aria-label="Main navigation">
     <a href="#/" class="nav-item ${!isCompare() ? 'active' : ''}" ${!isCompare() ? 'aria-current="page"' : ''}>${icon('search')}<span>Discover</span></a>
     <button type="button" class="nav-item" data-action="scan">${icon('scan')}<span>Scan</span></button>
     <a href="#/compare" class="nav-item ${isCompare() ? 'active' : ''}" ${isCompare() ? 'aria-current="page"' : ''}><span class="nav-icon">${icon('compare')}${selected.length ? `<span class="nav-count">${selected.length}</span>` : ''}</span><span>Compare</span></a>

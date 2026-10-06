@@ -1,6 +1,6 @@
 # GlowGuide
 
-A mobile browser prototype for beauty consultants. Built for the ACAD 325 school project.
+An iPad browser prototype for beauty consultants. Built for the ACAD 325 school project.
 
 Live prototype: [GlowGuide](https://glowguide-xi.vercel.app/).
 
@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. For a phone on the same reachable network, use the printed Network URL. The dev server must remain running.
+Open the local URL printed by Vite. For an iPad on the same reachable network, use the printed Network URL. The dev server must remain running.
 
 ```sh
 npm run check
@@ -21,6 +21,12 @@ npm run preview
 ```
 
 Node 22.13+ or 24+ is recommended for the TypeScript test runner. The current workspace was verified with Node 23.9.
+
+## Layout
+
+The reference canvas is the 11-inch iPad: **820 × 1180 CSS pixels** in portrait and **1180 × 820** in landscape. On touch devices, the app fills the available browser viewport, including safe-area spacing. Portrait uses three product columns; landscape uses four, with larger text and controls throughout.
+
+On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and bottom navigation stay in place while the content scrolls. Smaller touch screens retain a two-column fallback.
 
 ## Try the prototype
 

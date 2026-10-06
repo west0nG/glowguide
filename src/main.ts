@@ -59,8 +59,8 @@ function homeResults(): string {
 
 function renderHome(): string {
   return `${header()}<main class="main-content home-content" id="main">
-    ${searchField(query, 'home')}
-    <button class="scan-entry" data-action="scan"><span class="scan-entry-icon">${icon('scan', 27)}</span><strong>Scan the Product</strong>${icon('arrow', 21)}</button>
+    <div class="discovery-tools">${searchField(query, 'home')}
+    <button class="scan-entry" data-action="scan"><span class="scan-entry-icon">${icon('scan', 27)}</span><strong>Scan the Product</strong>${icon('arrow', 21)}</button></div>
     <div class="category-tabs" role="group" aria-label="Product categories">${categories.map(c => `<button class="category-tab ${c === category ? 'selected' : ''}" data-action="category" data-category="${c}" aria-pressed="${c === category}">${categoryLabels[c]}</button>`).join('')}</div>
     <section id="home-results" aria-label="Product collection">${homeResults()}</section>
   </main>${navigation()}`;
@@ -69,8 +69,8 @@ function renderHome(): string {
 function detail(p: Product): string {
   const glossary = p.ingredients.filter(i => i.korean);
   return `${header(true, 'Product notes')}<main class="main-content detail-content" id="main">
-    <div class="detail-image ${p.tone}">${picture(p, '', true)}<span class="image-caption">${p.category} · ${p.size}</span></div>
-    <div class="product-intro"><p class="eyebrow">${p.brand}</p><h1>${p.name}</h1><p class="product-subtitle">${p.subtitle}</p><p class="product-description">${p.description}</p></div>
+    <div class="detail-overview"><div class="detail-image ${p.tone}">${picture(p, '', true)}<span class="image-caption">${p.category} · ${p.size}</span></div>
+    <div class="product-intro"><p class="eyebrow">${p.brand}</p><h1>${p.name}</h1><p class="product-subtitle">${p.subtitle}</p><p class="product-description">${p.description}</p></div></div>
     <section class="detail-section"><div class="section-heading"><h2>At a glance</h2><span class="tiny-label">01</span></div><dl class="glance-grid"><div><dt>Texture</dt><dd>${p.texture}</dd></div><div><dt>Finish</dt><dd>${p.finish}</dd></div><div class="wide"><dt>Focus</dt><dd>${p.focus}</dd></div></dl></section>
     <section class="detail-section"><div class="section-heading"><h2>What’s inside</h2><span class="tiny-label">02</span></div><div class="ingredients">${p.ingredients.map((item, index) => `<div class="ingredient"><span class="ingredient-number">0${index + 1}</span><div class="ingredient-content"><div class="ingredient-heading"><h3>${item.name}</h3><span class="ingredient-origin" aria-label="Ingredient origin: ${ingredientOriginLabels[item.origin]}">${ingredientOriginLabels[item.origin]}</span></div><p>${item.note}</p></div></div>`).join('')}</div></section>
     ${glossary.length ? `<details class="label-notes"><summary><span class="label-icon">${icon('language')}</span><span><strong>Read the label</strong><small>Korean → English</small></span>${icon('down', 18)}</summary><div class="glossary"><p class="glossary-caption">Example ingredient terms</p>${glossary.map(i => `<div class="glossary-row"><span lang="ko">${i.korean}</span><span>${i.name}</span></div>`).join('')}</div></details>` : ''}
@@ -241,8 +241,19 @@ dialog.addEventListener('click', event => {
 });
 window.addEventListener('hashchange', () => {
   if (dialog.open) closeDialog();
-  render(); window.scrollTo({ top: 0, behavior: 'instant' }); app.scrollTop = 0;
+  render();
   app.querySelector<HTMLElement>('h1')?.setAttribute('tabindex', '-1');
   app.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true });
 });
+
+// Desktop previews keep the iPad canvas proportions; touch devices use their viewport.
+function fitTabletPreview(): void {
+  const styles = getComputedStyle(app);
+  const width = parseFloat(styles.getPropertyValue('--tablet-width'));
+  const height = parseFloat(styles.getPropertyValue('--tablet-height'));
+  const scale = Math.min(1, (window.innerWidth - 48) / width, (window.innerHeight - 48) / height);
+  app.style.setProperty('--preview-scale', String(Math.max(0.1, scale)));
+}
+window.addEventListener('resize', fitTabletPreview);
+fitTabletPreview();
 render();

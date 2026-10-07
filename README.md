@@ -24,11 +24,34 @@ Node 22.13+ or 24+ is recommended for the TypeScript test runner. The current wo
 
 For browser layout checks, `tests/dialog-layout.browser.mjs` exports `checkDialogLayout(page, baseUrl)`, using an Ego Browser Page and a URL that defaults to `http://localhost:5173/`. It verifies Scan and picker bounds across seven desktop/tablet/phone sizes, resizing while open, keyboard dismissal/focus, and scan/comparison independence. The caller creates and finishes the browser task space. This browser check runs separately from `npm test`.
 
+The entire app follows Hallie’s CLOSER reference: rose-brown gradient canvas, wine navigation and actions, warm cream content cards and inputs, and locally bundled Asul display type, with DM Sans for compact body text. Shared CSS tokens cover Discover/search, product details, comparison/recommendations, Consultation, product picker and scanner, including hover, focus, selection and empty states. Product photography retains its original colors. The reference’s school/fashion questions are replaced with basic skincare preferences.
+
+`tests/consultation.browser.mjs` exports `checkConsultation(page, baseUrl)` for Ego Browser. It checks real selections, step navigation, session/save/reset behavior, multiline escaping, search/comparison independence, and four tablet/desktop/phone layouts. Run separately from `npm test`.
+
+`tests/theme.browser.mjs` exports `checkTheme(page, baseUrl)` for Ego Browser. It exercises and captures eleven page/modal states at four tablet/desktop/phone sizes, checking horizontal overflow and the shared visual system.
+
+The shared GSAP motion language covers eight interaction types. These are action feedback, not whole-page transitions; all controls and navigation respond immediately.
+
+| Surface | Trigger and feedback | Timing |
+| --- | --- | --- |
+| Product links and buttons throughout the app | Pointer/touch press or keyboard activation gently compresses and releases the image/control | 0.28s |
+| Discover categories and search | Retained products move from their previous positions; new results appear in a short stagger; count/empty state confirms changes | 0.24–0.44s |
+| Main navigation | The newly active entry draws and releases a short marker | 0.42s |
+| Product details | Opening Read the label reveals its explanation rows in sequence; closing remains native and immediate | 0.25s + 0.04s/row |
+| Product picker | Search results rearrange; confirming the first item briefly settles its image and outlines the selected comparison slot | 0.32–0.44s |
+| Consultation | Selecting an answer draws its ring and check | 0.38s |
+| Comparison | Completing or replacing a pair joins the two cards and briefly outlines them | 0.54s |
+| Sample scanner | Corner marks focus and a single soft beam sweeps across the sample | 0.84s |
+
+Reduced-motion settings use complete static states. Scoped contexts cancel before rerender, reset, modal close, preference changes, or HMR disposal. No ongoing floating effects or hover dependency. Result position measurements account for scaled desktop iPad previews.
+
+`tests/motion.browser.mjs` checks the original questionnaire/pair/scanner feedback. `tests/motion-coverage.browser.mjs` checks the added pointer/keyboard press, category/search reflow, navigation, glossary, picker confirmation, rapid updates/cancellation, reduced motion, and stable document listener counts. Both export check functions for an Ego Browser Page and run separately from `npm test`.
+
 ## Layout
 
 The reference canvas is the 11-inch iPad: **820 × 1180 CSS pixels** in portrait and **1180 × 820** in landscape. On touch devices, the app fills the available browser viewport, including safe-area spacing. Portrait uses three product columns; landscape uses four, with larger text and controls throughout.
 
-On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and navigation stay in place while the content scrolls. At app widths of 768px and above, Discover, Scan, Compare, and Consultation sit in a 96px left navigation rail; narrower layouts use bottom navigation. The selected page has a pale pink background in the rail, and Scan opens the existing scanner dialog. Smaller touch screens retain a two-column fallback. Scan and product-picker dialogs use the same canvas bounds and scale as the app; their dimmed backdrop stays inside the frame, including while resizing. Narrow screens keep the product picker as a bottom sheet.
+On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and navigation stay in place while the content scrolls. At app widths of 768px and above, Discover, Scan, Compare, and Consultation sit in a 96px left navigation rail; narrower layouts use bottom navigation. The selected page has a cream background in the wine-colored rail, and Scan opens the existing scanner dialog. Smaller touch screens retain a two-column fallback. Scan and product-picker dialogs use the same canvas bounds and scale as the app; their dimmed backdrop stays inside the frame, including while resizing. Narrow screens keep the product picker as a bottom sheet.
 
 ## Try the prototype
 
@@ -38,7 +61,7 @@ On desktop, the preview keeps the iPad proportions and scales uniformly to fit t
 4. Compare **Soft Pinch Liquid Blush** with **Pocket Blush** or **Cheeks Out Freestyle Cream Blush**.
 5. Select **Scan**, choose a sample thumbnail, and use **Scan this sample** to open its product information. Scanning and Discover never add products to Compare or change an existing pair.
 
-6. Open **Consultation** as the consultant to record a customer’s usual routine, products used, skincare habits/preferences, and additional notes. The four fields are vertically stacked at every screen size and start empty, without suggested answers. **New customer** clears the fields. **Submit** shows “Saved” and retains the inputs; editing clears that feedback. Notes remain only in the current page session, survive navigation, and clear on refresh. There is no server save or generated response.
+6. Open **Consultation** to step through the customer’s skin type, skincare concerns (multiple choices), preferred texture, and optional additional notes. Answers start blank and can be skipped. **Back / Next** retain answers; **New customer** clears the questionnaire and returns to step one without changing product searches or comparisons. **Submit** shows “Saved” for the current session; editing an answer clears that feedback. Answers, step position, and notes survive navigation, and clear on refresh. There is no server save, diagnosis, or generated response.
 
 The scanner is a guided simulation. Product data and recommendation text are predefined; no camera, recognition API, or AI service is connected. Ten independent products are included: two each from Rare Beauty, Rhode, and Fenty Beauty, plus four from Beauty of Joseon. Selections last for the current page session and reset on reload.
 
@@ -47,6 +70,7 @@ The scanner is a guided simulation. Product data and recommendation text are pre
 - `src/catalog.ts`: product records, search, pair selection, recommendation logic.
 - `src/main.ts`: home, detail, comparison, picker, and scanner interactions.
 - `src/style.css`: responsive visual design.
+- `src/motion.ts`: bounded GSAP interaction contexts and reduced-motion cleanup.
 - `src/icons.ts`: small line-icon set.
 - `public/images/`: local product photographs.
 - `tests/catalog.test.ts`: core search and comparison behavior.

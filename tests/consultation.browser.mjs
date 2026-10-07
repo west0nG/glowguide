@@ -1,0 +1,61 @@
+import assert from 'node:assert/strict';
+export async function checkConsultation(page, baseUrl='http://localhost:5173/') {
+ await page.goto(baseUrl); await page.reload();
+ await page.fill('#home-search','Rare');
+ await page.click('.app-nav a[href="#/compare"]');
+ await page.click('[data-action="picker"][data-index="0"]');
+ await page.click('[data-action="pick"][data-id="rare-blush"]');
+ await page.click('.app-nav a[href="#/consultation"]');
+ const checked=()=>page.evaluate(()=>[...document.querySelectorAll('#consultation-form input:checked')].map(e=>e.value));
+ await page.click('input[value="Dry"]'); await page.click('input[value="Combination"]');
+ assert.deepEqual(await checked(),['Combination']);
+ await page.click('[data-action="consultation-next"]');
+ await page.click('input[value="Dryness"]'); await page.click('input[value="Rough texture"]');
+ assert.deepEqual(await checked(),['Dryness','Rough texture']);
+ await page.click('[data-action="consultation-back"]'); assert.deepEqual(await checked(),['Combination']);
+ await page.click('[data-action="consultation-next"]'); assert.deepEqual(await checked(),['Dryness','Rough texture']);
+ await page.click('[data-action="consultation-next"]'); await page.click('input[value="Lightweight and fresh"]');
+ await page.click('[data-action="consultation-next"]');
+ const notes='\nCustomer prefers fragrance-free options.\n<script>bad()</script> & "notes"';
+ await page.fill('#consultation-notes',notes);
+ await page.click('button[type="submit"]');
+ assert.equal(await page.evaluate(()=>document.querySelector('#consultation-status').textContent),'Saved');
+ await page.click('.app-nav a[href="#/"]');
+ assert.equal(await page.evaluate(()=>document.querySelector('#home-search').value),'Rare');
+ await page.evaluate(()=>history.back());
+ await page.waitForSelector('#consultation-notes');
+ assert.equal(await page.evaluate(()=>document.querySelector('#consultation-notes').value),notes);
+ assert.equal(await page.evaluate(()=>document.querySelector('#consultation-status').textContent),'Saved');
+ await page.fill('#consultation-notes',notes+' edited');
+ assert.equal(await page.evaluate(()=>document.querySelector('#consultation-status').textContent),'');
+ await page.click('[data-action="consultation-back"]'); assert.deepEqual(await checked(),['Lightweight and fresh']);
+ await page.click('[data-action="new-customer"]');
+ assert.deepEqual(await checked(),[]);
+ assert.equal(await page.evaluate(()=>document.activeElement.id),'consultation-skinType-0');
+ await page.click('[data-action="consultation-next"]'); assert.deepEqual(await checked(),[]);
+ await page.click('[data-action="consultation-next"]'); assert.deepEqual(await checked(),[]);
+ await page.click('[data-action="consultation-next"]');
+ assert.equal(await page.evaluate(()=>document.querySelector('#consultation-notes').value),'');
+ await page.click('.app-nav a[href="#/compare"]');
+ assert.deepEqual(await page.evaluate(()=>[...document.querySelectorAll('[data-action="remove"]')].map(e=>e.dataset.id)),['rare-blush']);
+ await page.click('.app-nav a[href="#/consultation"]');
+ await page.click('[data-action="new-customer"]'); await page.click('input[value="Oily"]');
+ await page.reload(); assert.deepEqual(await checked(),[]);
+ const sizes=[[820,1180,true],[1180,820,true],[900,800,false],[360,800,true]];
+ for(const [width,height,touch] of sizes) {
+  await page.cdp('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:touch});
+  await page.cdp('Emulation.setTouchEmulationEnabled',{enabled:touch});
+  await page.click('[data-action="new-customer"]');
+  await page.click('input[value="Combination"]');
+  const state=await page.evaluate(()=>{
+   const a=document.querySelector('#app'),m=document.querySelector('#main'),f=document.querySelector('#consultation-form');
+   return {overflow:document.documentElement.scrollWidth-innerWidth,main:m.scrollWidth-m.clientWidth,form:f.scrollWidth-f.clientWidth,ratio:a.getBoundingClientRect().width/a.getBoundingClientRect().height,active:document.querySelectorAll('.app-nav [aria-current="page"]').length};
+  });
+  assert.ok(state.overflow<=1&&state.main<=1&&state.form<=1,JSON.stringify(state)); assert.equal(state.active,1);
+  if(!touch) assert.ok(Math.abs(state.ratio-820/1180)<.01||Math.abs(state.ratio-1180/820)<.01);
+  await page.screenshot({path:`/tmp/glow-${width}.png`});
+  await page.click('[data-action="consultation-next"]'); await page.click('input[value="Dryness"]');
+  await page.click('[data-action="consultation-back"]'); assert.deepEqual(await checked(),['Combination']);
+ }
+ console.log('PASS questionnaire: radio/multi-select, four-step navigation, session preservation, multiline escaping, save/edit/reset, search/comparison independence, refresh reset, four viewport layouts.');
+}

@@ -38,7 +38,7 @@ On desktop, the preview keeps the iPad proportions and scales uniformly to fit t
 4. Compare **Soft Pinch Liquid Blush** with **Pocket Blush** or **Cheeks Out Freestyle Cream Blush**.
 5. Select **Scan**, choose a sample thumbnail, and use **Scan this sample** to open its product information. Scanning and Discover never add products to Compare or change an existing pair.
 
-6. Open **Consultation** as the consultant to record a customer’s usual routine, products used, skincare habits/preferences, and additional notes. The four fields are vertically stacked at every screen size and start empty, without suggested answers. Inputs stay available when switching pages in the same session; refreshing clears them. **Submit** is a placeholder and does not send, clear, or generate anything.
+6. Open **Consultation** as the consultant to record a customer’s usual routine, products used, skincare habits/preferences, and additional notes. The four fields are vertically stacked at every screen size and start empty, without suggested answers. **New customer** clears the fields. **Submit** shows “Saved” and retains the inputs; editing clears that feedback. Notes remain only in the current page session, survive navigation, and clear on refresh. There is no server save or generated response.
 
 The scanner is a guided simulation. Product data and recommendation text are predefined; no camera, recognition API, or AI service is connected. Ten independent products are included: two each from Rare Beauty, Rhode, and Fenty Beauty, plus four from Beauty of Joseon. Selections last for the current page session and reset on reload.
 

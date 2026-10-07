@@ -30,6 +30,7 @@ const consultationFields = [
 const consultationDraft: Record<typeof consultationFields[number]['id'], string> = {
   routine: '', products: '', habits: '', notes: '',
 };
+let consultationSaved = false;
 
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const picture = (p: Product, className = '', eager = false) => `<img class="product-photo ${p.category === 'Blush' || p.category === 'Lip' ? 'packshot' : ''} ${className}" src="${p.image}" alt="${escape(p.name)} by ${escape(p.brand)}" loading="${eager ? 'eager' : 'lazy'}" width="800" height="800" />`;
@@ -122,10 +123,10 @@ function compare(): string {
 
 function consultation(): string {
   return `${header()}<main class="main-content consultation-content" id="main">
-    <h1 id="consultation-title">Consultation</h1>
+    <div class="consultation-heading"><h1 id="consultation-title">Consultation</h1><button type="button" class="new-customer-button" data-action="new-customer">New customer</button></div>
     <form id="consultation-form" aria-labelledby="consultation-title">
       <div class="consultation-fields">${consultationFields.map(field => `<div class="consultation-field"><label for="consultation-${field.id}">${field.label}</label><textarea id="consultation-${field.id}" name="${field.id}" rows="3">\n${escape(consultationDraft[field.id])}</textarea></div>`).join('')}</div>
-      <button type="submit" class="primary-button consultation-submit">Submit</button>
+      <div class="consultation-actions"><button type="submit" class="primary-button consultation-submit">Submit</button><span id="consultation-status" role="status" aria-live="polite">${consultationSaved ? 'Saved' : ''}</span></div>
     </form>
   </main>${navigation()}`;
 }
@@ -241,6 +242,11 @@ document.addEventListener('click', event => {
     case 'close-dialog': closeDialog(); break;
     case 'scan-sample': scanId = id!; renderScan(); dialog.querySelector<HTMLButtonElement>(`[data-action="scan-sample"][data-id="${id}"]`)?.focus(); break;
     case 'run-scan': runScan(); break;
+    case 'new-customer':
+      for (const field of consultationFields) consultationDraft[field.id] = '';
+      consultationSaved = false; render();
+      document.querySelector<HTMLTextAreaElement>('#consultation-routine')?.focus();
+      break;
     case 'reset-search': query = ''; category = 'All'; render(); break;
     case 'clear-search': {
       const input = document.querySelector<HTMLInputElement>(`#${mode}-search`)!;
@@ -253,7 +259,11 @@ document.addEventListener('input', event => {
   const input = event.target;
   if (input instanceof HTMLTextAreaElement && input.form?.id === 'consultation-form') {
     const field = consultationFields.find(field => field.id === input.name);
-    if (field) consultationDraft[field.id] = input.value;
+    if (field) {
+      consultationDraft[field.id] = input.value;
+      consultationSaved = false;
+      document.querySelector('#consultation-status')!.textContent = '';
+    }
     return;
   }
   if (!(input instanceof HTMLInputElement)) return;
@@ -265,8 +275,11 @@ document.addEventListener('input', event => {
 });
 
 document.addEventListener('submit', event => {
-  // This prototype only collects context; Submit intentionally has no next step.
-  if (event.target instanceof HTMLFormElement && event.target.id === 'consultation-form') event.preventDefault();
+  if (!(event.target instanceof HTMLFormElement) || event.target.id !== 'consultation-form') return;
+  event.preventDefault();
+  // Save feedback is limited to this in-memory prototype session.
+  consultationSaved = true;
+  document.querySelector('#consultation-status')!.textContent = 'Saved';
 });
 
 dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(); });

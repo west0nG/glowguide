@@ -104,14 +104,19 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .primary-button:disabled { opacity: .65; }
 .full-width { width: 100%; }
 .primary-button > svg:last-child:not(:first-child) { margin-left: auto; }
-.consultation-content h1 { font-size: 28px; margin-bottom: 28px; }
+.consultation-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; max-width: 840px; margin-bottom: 28px; }
+.consultation-content h1 { font-size: 28px; }
+.new-customer-button { min-height: 44px; padding: 0 12px; border: 1px solid #cbb9b9; border-radius: 8px; color: var(--rose); font-size: 13px; white-space: nowrap; }
+.new-customer-button:hover { background: var(--pale); }
 #consultation-form { max-width: 840px; }
 .consultation-fields { display: grid; gap: 24px; }
 .consultation-field { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .consultation-field label { font-size: 16px; font-weight: 500; line-height: 1.5; }
 .consultation-field textarea { display: block; width: 100%; min-height: 112px; padding: 14px 16px; border: 1px solid #dfd5cf; border-radius: 10px; background: #fffdfb; color: var(--ink); font-size: 16px; line-height: 1.6; resize: vertical; }
 .consultation-field textarea:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 3px #89596410; }
-.consultation-submit { min-width: 160px; margin-top: 28px; }
+.consultation-actions { display: flex; align-items: center; gap: 16px; margin-top: 28px; }
+.consultation-submit { min-width: 160px; }
+#consultation-status { min-height: 21px; color: var(--rose); font-size: 14px; line-height: 1.5; }
 .detail-overview { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 32px; }
 .detail-image { position: relative; aspect-ratio: 1; min-width: 0; border-radius: 14px; overflow: hidden; }
 .detail-image .product-photo { object-position: 50% 60%; }
@@ -237,7 +242,10 @@ dialog[open] .dialog-panel { animation: appear .2s ease-out; }
   .slot-image { height: 240px; }
 }
 @container app (max-width: 699px) {
-  .consultation-content h1 { font-size: 26px; margin-bottom: 24px; }
+  .consultation-heading { margin-bottom: 24px; }
+  .consultation-content h1 { font-size: 26px; }
+  .consultation-actions { flex-direction: column; align-items: stretch; gap: 12px; }
+  #consultation-status { text-align: center; }
   .consultation-submit { width: 100%; }
   .app-header, .main-content { --page-gutter: 24px; }
   .app-header { min-height: 80px; }

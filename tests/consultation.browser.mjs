@@ -52,7 +52,7 @@ export async function checkConsultation(page, baseUrl='http://localhost:5173/') 
    return {overflow:document.documentElement.scrollWidth-innerWidth,main:m.scrollWidth-m.clientWidth,form:f.scrollWidth-f.clientWidth,ratio:a.getBoundingClientRect().width/a.getBoundingClientRect().height,active:document.querySelectorAll('.app-nav [aria-current="page"]').length};
   });
   assert.ok(state.overflow<=1&&state.main<=1&&state.form<=1,JSON.stringify(state)); assert.equal(state.active,1);
-  if(!touch) assert.ok(Math.abs(state.ratio-820/1180)<.01||Math.abs(state.ratio-1180/820)<.01);
+  assert.ok(Math.abs(state.ratio-1180/820)<.01, 'Every viewport retains the landscape canvas');
   await page.screenshot({path:`/tmp/glow-${width}.png`});
   await page.click('[data-action="consultation-next"]'); await page.click('input[value="Dryness"]');
   await page.click('[data-action="consultation-back"]'); assert.deepEqual(await checked(),['Combination']);

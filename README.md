@@ -49,16 +49,18 @@ Reduced-motion settings use complete static states. Scoped contexts cancel befor
 
 ## Layout
 
-The reference canvas is the 11-inch iPad: **820 × 1180 CSS pixels** in portrait and **1180 × 820** in landscape. On touch devices, the app fills the available browser viewport, including safe-area spacing. Portrait uses three product columns; landscape uses four, with larger text and controls throughout.
+The app always opens with an **1180 × 820 CSS pixel landscape iPad canvas**, including direct links and refreshes. Portrait iPads, narrow phones, and tall desktop windows uniformly shrink that same canvas to fit; viewport shape and pointer type never switch it to portrait. There is no orientation selector. At widths of 700px and above the frame keeps a 48px fitting margin; smaller windows use all available width. Scaling caps at 1.
 
-On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and navigation stay in place while the content scrolls. At app widths of 768px and above, Discover, Scan, Compare, and Consultation sit in a 96px left navigation rail; narrower layouts use bottom navigation. The selected page has a cream background in the wine-colored rail, and Scan opens the existing scanner dialog. Smaller touch screens retain a two-column fallback. Scan and product-picker dialogs use the same canvas bounds and scale as the app; their dimmed backdrop stays inside the frame, including while resizing. Narrow screens keep the product picker as a bottom sheet.
+The navigation order is Consultation, Discover, Scan, Compare; the initial route remains Discover. The header and 96px navigation rail stay in place while the main content scrolls. The logical landscape layout retains four product columns and the two-column details/comparison views at every outer window size. Scan and product-picker dialogs share the app's measured bounds and CSS zoom, including when resized while open. Their dimmed backdrop stays inside the frame. A 1280 × 868 outer window displays the canvas at its full 1180 × 820 size.
+
+`tests/landscape.browser.mjs` checks first visits and route refreshes at 900 × 800, 360 × 800, 820 × 1180, and 1280 × 868, plus real questionnaire/picker actions and scaled dialog alignment.
 
 ## Try the prototype
 
 1. Search for `Rare Beauty`, `Rhode`, `Fenty`, or an ingredient. Filter by Blush, Lips, or skincare category.
 2. Open any product for details and ingredient-origin labels (Natural, Synthetic, or Not specified when provenance is unclear). Korean ingredient terms remain an optional add-on on Beauty of Joseon products; try `쌀겨수`.
 3. Open **Compare** and use its two **Add a product** slots to search for and select a pair.
-4. Compare **Soft Pinch Liquid Blush** with **Pocket Blush** or **Cheeks Out Freestyle Cream Blush**.
+4. Compare **Soft Pinch Liquid Blush** with **Pocket Blush** or **Cheeks Out Freestyle Cream Blush**. Once two distinct products are selected, the bottom GlowGuide card randomly chooses A or B and displays that product’s name. A is the left slot, B the right. Each pair keeps its choice for the current page session; changing the pair draws a choice for the new pair, and removing either product hides the card. This is predefined prototype behavior, not product analysis or an AI service.
 5. Select **Scan**, choose a sample thumbnail, and use **Scan this sample** to open its product information. Scanning and Discover never add products to Compare or change an existing pair.
 
 6. Open **Consultation** to step through the customer’s skin type, skincare concerns (multiple choices), preferred texture, and optional additional notes. Answers start blank and can be skipped. **Back / Next** retain answers; **New customer** clears the questionnaire and returns to step one without changing product searches or comparisons. **Submit** shows “Saved” for the current session; editing an answer clears that feedback. Answers, step position, and notes survive navigation, and clear on refresh. There is no server save, diagnosis, or generated response.
@@ -71,6 +73,7 @@ The scanner is a guided simulation. Product data and recommendation text are pre
 - `src/main.ts`: home, detail, comparison, picker, and scanner interactions.
 - `src/style.css`: responsive visual design.
 - `src/motion.ts`: bounded GSAP interaction contexts and reduced-motion cleanup.
+- `src/pair-suggestion.ts`: session-stable random comparison choice.
 - `src/icons.ts`: small line-icon set.
 - `public/images/`: local product photographs.
 - `tests/catalog.test.ts`: core search and comparison behavior.

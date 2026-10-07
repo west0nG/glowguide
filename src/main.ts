@@ -6,6 +6,8 @@ import './style.css';
 import { categories, categoryLabels, ingredientOriginLabels, getProduct, products, recommend, searchProducts, selectProduct } from './catalog';
 import type { Category, Product } from './catalog';
 import { icon } from './icons';
+import { createPairSuggestion } from './pair-suggestion';
+const pairSuggestion = createPairSuggestion();
 import { animateChoice, animatePair, animateScan, animateCollection, captureCollection, animateNavigation, animateGlossary, animateSlot, animatePress, stopMotionWithin } from './motion';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -49,10 +51,10 @@ function header(back = false, title = ''): string {
 function navigation(): string {
   const activePage = isCompare() ? 'compare' : currentRoute() === '/consultation' ? 'consultation' : 'discover';
   return `<nav class="app-nav" aria-label="Main navigation">
+    <a href="#/consultation" class="nav-item consultation-nav ${activePage === 'consultation' ? 'active' : ''}" ${activePage === 'consultation' ? 'aria-current="page"' : ''}>${icon('notes')}<span>Consultation</span><span class="nav-confirm" aria-hidden="true"></span></a>
     <a href="#/" class="nav-item ${activePage === 'discover' ? 'active' : ''}" ${activePage === 'discover' ? 'aria-current="page"' : ''}>${icon('search')}<span>Discover</span><span class="nav-confirm" aria-hidden="true"></span></a>
     <button type="button" class="nav-item" data-action="scan">${icon('scan')}<span>Scan</span></button>
     <a href="#/compare" class="nav-item ${isCompare() ? 'active' : ''}" ${isCompare() ? 'aria-current="page"' : ''}><span class="nav-icon">${icon('compare')}${selected.length ? `<span class="nav-count">${selected.length}</span>` : ''}</span><span>Compare</span><span class="nav-confirm" aria-hidden="true"></span></a>
-    <a href="#/consultation" class="nav-item consultation-nav ${activePage === 'consultation' ? 'active' : ''}" ${activePage === 'consultation' ? 'aria-current="page"' : ''}>${icon('notes')}<span>Consultation</span><span class="nav-confirm" aria-hidden="true"></span></a>
   </nav>`;
 }
 
@@ -119,9 +121,12 @@ function comparisonTable(a: Product, b: Product): string {
 
 function compare(): string {
   const a = getProduct(selected[0] || ''); const b = getProduct(selected[1] || '');
+  const suggestion = a && b ? pairSuggestion([a.id, b.id]) : null;
+  const suggestedProduct = suggestion ? getProduct(suggestion.id) : null;
   return `${header()}<main class="main-content compare-content" id="main" aria-label="Compare products"><div class="compare-slots">${slot(0)}${slot(1)}${a && b ? '<svg class="pair-link" aria-hidden="true" viewBox="0 0 32 24"><path class="pair-line" d="M0 12H14" pathLength="100"/><path class="pair-line" d="M32 12H18" pathLength="100"/><path class="pair-seal" d="M16 7L21 12L16 17L11 12Z"/></svg>' : ''}</div>
     ${a && b ? comparisonTable(a, b) : ''}
     ${selected.length ? `<button class="reset-comparison text-button" data-action="clear-pair">${icon('reset', 15)} Clear comparison</button>` : ''}
+    ${suggestion && suggestedProduct ? `<aside class="pair-suggestion" aria-label="GlowGuide suggestion" data-product-id="${suggestedProduct.id}" data-slot="${suggestion.slot}"><h2>GlowGuide 建议你选 ${suggestion.slot}</h2><p>${escape(suggestedProduct.name)}</p></aside>` : ''}
     </main>${navigation()}`;
 }
 
@@ -389,13 +394,14 @@ window.addEventListener('hashchange', () => {
   app.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true });
 });
 
-// Desktop previews keep the iPad canvas proportions; touch devices use their viewport.
+// Fit the same landscape canvas on every device, including portrait and narrow windows.
 function fitTabletPreview(): void {
   const styles = getComputedStyle(app);
   const width = parseFloat(styles.getPropertyValue('--tablet-width'));
   const height = parseFloat(styles.getPropertyValue('--tablet-height'));
-  const scale = Math.min(1, (window.innerWidth - 48) / width, (window.innerHeight - 48) / height);
-  app.style.setProperty('--preview-scale', String(Math.max(0.1, scale)));
+  const frameMargin = window.innerWidth >= 700 ? 48 : 0;
+  const scale = Math.min(1, Math.max(1, window.innerWidth - frameMargin) / width, Math.max(1, window.innerHeight - frameMargin) / height);
+  app.style.setProperty('--preview-scale', String(scale));
   if (dialog.open) fitDialogToApp();
 }
 window.addEventListener('resize', fitTabletPreview);

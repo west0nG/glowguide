@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 // Each interaction owns its transient styles. CSS/native controls own the settled state.
 const active = new Map<Element, gsap.Context>();
 let enabled = false;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 function stop(owner: Element): void {
   const context = active.get(owner);
   active.delete(owner);
@@ -20,7 +21,8 @@ media.add('(prefers-reduced-motion: no-preference)', () => {
 });
 function play(owner: Element, name: string, build: (timeline: gsap.core.Timeline) => void): void {
   stop(owner);
-  if (!enabled) return;
+  // The media change callback can lag behind an immediate input event.
+  if (!enabled || reducedMotion.matches) return;
   const context = gsap.context(() => {
     const timeline = gsap.timeline({ defaults: { ease: 'power2.out' }, onComplete: () => stop(owner) });
     build(timeline);

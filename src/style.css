@@ -110,7 +110,6 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .consultation-field { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .consultation-field label { font-size: 16px; font-weight: 500; line-height: 1.5; }
 .consultation-field textarea { display: block; width: 100%; min-height: 112px; padding: 14px 16px; border: 1px solid #dfd5cf; border-radius: 10px; background: #fffdfb; color: var(--ink); font-size: 16px; line-height: 1.6; resize: vertical; }
-.consultation-field textarea::placeholder { color: #8b807c; opacity: 1; }
 .consultation-field textarea:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 3px #89596410; }
 .consultation-submit { min-width: 160px; margin-top: 28px; }
 .detail-overview { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 32px; }
@@ -231,8 +230,6 @@ dialog[open] .dialog-panel { animation: appear .2s ease-out; }
   .app-nav .nav-item.active::after { display: none; }
 }
 @container app (min-width: 1000px) {
-  .consultation-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
-  .consultation-field label { flex: 1; }
   .app-header { min-height: 88px; }
   .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .detail-overview { grid-template-columns: 380px minmax(0, 1fr); gap: 48px; }

@@ -22,10 +22,10 @@ let pickerIndex = 0;
 let dialogOrigin: HTMLElement | null = null;
 let dialogMode: 'scan' | 'picker' | null = null;
 const consultationFields = [
-  { id: 'routine', label: 'What is your usual skincare routine?', placeholder: 'Morning and evening routine' },
-  { id: 'products', label: 'Which skincare products do you use?', placeholder: 'Product names or types' },
-  { id: 'habits', label: 'Do you have any skincare habits or preferences?', placeholder: 'Daily habits or preferences' },
-  { id: 'notes', label: 'Additional notes', placeholder: 'Anything else to add' },
+  { id: 'routine', label: 'What is the customer’s usual skincare routine?' },
+  { id: 'products', label: 'Which skincare products does the customer use?' },
+  { id: 'habits', label: 'Does the customer have any skincare habits or preferences?' },
+  { id: 'notes', label: 'Additional notes' },
 ] as const;
 const consultationDraft: Record<typeof consultationFields[number]['id'], string> = {
   routine: '', products: '', habits: '', notes: '',
@@ -124,7 +124,7 @@ function consultation(): string {
   return `${header()}<main class="main-content consultation-content" id="main">
     <h1 id="consultation-title">Consultation</h1>
     <form id="consultation-form" aria-labelledby="consultation-title">
-      <div class="consultation-fields">${consultationFields.map(field => `<div class="consultation-field"><label for="consultation-${field.id}">${field.label}</label><textarea id="consultation-${field.id}" name="${field.id}" rows="3" placeholder="${field.placeholder}">\n${escape(consultationDraft[field.id])}</textarea></div>`).join('')}</div>
+      <div class="consultation-fields">${consultationFields.map(field => `<div class="consultation-field"><label for="consultation-${field.id}">${field.label}</label><textarea id="consultation-${field.id}" name="${field.id}" rows="3">\n${escape(consultationDraft[field.id])}</textarea></div>`).join('')}</div>
       <button type="submit" class="primary-button consultation-submit">Submit</button>
     </form>
   </main>${navigation()}`;

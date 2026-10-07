@@ -28,7 +28,7 @@ For browser layout checks, `tests/dialog-layout.browser.mjs` exports `checkDialo
 
 The reference canvas is the 11-inch iPad: **820 × 1180 CSS pixels** in portrait and **1180 × 820** in landscape. On touch devices, the app fills the available browser viewport, including safe-area spacing. Portrait uses three product columns; landscape uses four, with larger text and controls throughout.
 
-On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and navigation stay in place while the content scrolls. At app widths of 768px and above, Discover, Scan, and Compare sit in a 96px left navigation rail; narrower layouts use bottom navigation. The selected page has a pale pink background in the rail, and Scan opens the existing scanner dialog. Smaller touch screens retain a two-column fallback. Scan and product-picker dialogs use the same canvas bounds and scale as the app; their dimmed backdrop stays inside the frame, including while resizing. Narrow screens keep the product picker as a bottom sheet.
+On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and navigation stay in place while the content scrolls. At app widths of 768px and above, Discover, Scan, Compare, and Consultation sit in a 96px left navigation rail; narrower layouts use bottom navigation. The selected page has a pale pink background in the rail, and Scan opens the existing scanner dialog. Smaller touch screens retain a two-column fallback. Scan and product-picker dialogs use the same canvas bounds and scale as the app; their dimmed backdrop stays inside the frame, including while resizing. Narrow screens keep the product picker as a bottom sheet.
 
 ## Try the prototype
 
@@ -37,6 +37,8 @@ On desktop, the preview keeps the iPad proportions and scales uniformly to fit t
 3. Open **Compare** and use its two **Add a product** slots to search for and select a pair.
 4. Compare **Soft Pinch Liquid Blush** with **Pocket Blush** or **Cheeks Out Freestyle Cream Blush**.
 5. Select **Scan**, choose a sample thumbnail, and use **Scan this sample** to open its product information. Scanning and Discover never add products to Compare or change an existing pair.
+
+6. Open **Consultation** to enter a customer’s usual routine, products used, skincare habits/preferences, and additional notes. Inputs stay available when switching pages in the same session; refreshing clears them. **Submit** is a placeholder and does not send, clear, or generate anything.
 
 The scanner is a guided simulation. Product data and recommendation text are predefined; no camera, recognition API, or AI service is connected. Ten independent products are included: two each from Rare Beauty, Rhode, and Fenty Beauty, plus four from Beauty of Joseon. Selections last for the current page session and reset on reload.
 

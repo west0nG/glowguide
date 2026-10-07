@@ -21,6 +21,15 @@ let scanning = false;
 let pickerIndex = 0;
 let dialogOrigin: HTMLElement | null = null;
 let dialogMode: 'scan' | 'picker' | null = null;
+const consultationFields = [
+  { id: 'routine', label: 'What is your usual skincare routine?', placeholder: 'Morning and evening routine' },
+  { id: 'products', label: 'Which skincare products do you use?', placeholder: 'Product names or types' },
+  { id: 'habits', label: 'Do you have any skincare habits or preferences?', placeholder: 'Daily habits or preferences' },
+  { id: 'notes', label: 'Additional notes', placeholder: 'Anything else to add' },
+] as const;
+const consultationDraft: Record<typeof consultationFields[number]['id'], string> = {
+  routine: '', products: '', habits: '', notes: '',
+};
 
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const picture = (p: Product, className = '', eager = false) => `<img class="product-photo ${p.category === 'Blush' || p.category === 'Lip' ? 'packshot' : ''} ${className}" src="${p.image}" alt="${escape(p.name)} by ${escape(p.brand)}" loading="${eager ? 'eager' : 'lazy'}" width="800" height="800" />`;
@@ -34,10 +43,12 @@ function header(back = false, title = ''): string {
 }
 
 function navigation(): string {
+  const activePage = isCompare() ? 'compare' : currentRoute() === '/consultation' ? 'consultation' : 'discover';
   return `<nav class="app-nav" aria-label="Main navigation">
-    <a href="#/" class="nav-item ${!isCompare() ? 'active' : ''}" ${!isCompare() ? 'aria-current="page"' : ''}>${icon('search')}<span>Discover</span></a>
+    <a href="#/" class="nav-item ${activePage === 'discover' ? 'active' : ''}" ${activePage === 'discover' ? 'aria-current="page"' : ''}>${icon('search')}<span>Discover</span></a>
     <button type="button" class="nav-item" data-action="scan">${icon('scan')}<span>Scan</span></button>
     <a href="#/compare" class="nav-item ${isCompare() ? 'active' : ''}" ${isCompare() ? 'aria-current="page"' : ''}><span class="nav-icon">${icon('compare')}${selected.length ? `<span class="nav-count">${selected.length}</span>` : ''}</span><span>Compare</span></a>
+    <a href="#/consultation" class="nav-item consultation-nav ${activePage === 'consultation' ? 'active' : ''}" ${activePage === 'consultation' ? 'aria-current="page"' : ''}>${icon('notes')}<span>Consultation</span></a>
   </nav>`;
 }
 
@@ -109,14 +120,25 @@ function compare(): string {
     </main>${navigation()}`;
 }
 
+function consultation(): string {
+  return `${header()}<main class="main-content consultation-content" id="main">
+    <h1 id="consultation-title">Consultation</h1>
+    <form id="consultation-form" aria-labelledby="consultation-title">
+      <div class="consultation-fields">${consultationFields.map(field => `<div class="consultation-field"><label for="consultation-${field.id}">${field.label}</label><textarea id="consultation-${field.id}" name="${field.id}" rows="3" placeholder="${field.placeholder}">\n${escape(consultationDraft[field.id])}</textarea></div>`).join('')}</div>
+      <button type="submit" class="primary-button consultation-submit">Submit</button>
+    </form>
+  </main>${navigation()}`;
+}
+
 function render(): void {
   const route = currentRoute();
   if (route === '/compare') app.innerHTML = compare();
+  else if (route === '/consultation') app.innerHTML = consultation();
   else if (route.startsWith('/product/')) {
     const p = getProduct(route.slice('/product/'.length));
     app.innerHTML = p ? detail(p) : `${header(true, 'Product notes')}<main class="main-content empty-state"><h1>Product not found.</h1><p>Browse the sample collection to find a product.</p><a class="primary-button" href="#/">Back to products</a></main>${navigation()}`;
   } else app.innerHTML = renderHome();
-  document.title = route === '/compare' ? 'Compare · GlowGuide' : route.startsWith('/product/') ? `${getProduct(route.slice(9))?.name || 'Product'} · GlowGuide` : 'GlowGuide';
+  document.title = route === '/compare' ? 'Compare · GlowGuide' : route === '/consultation' ? 'Consultation · GlowGuide' : route.startsWith('/product/') ? `${getProduct(route.slice(9))?.name || 'Product'} · GlowGuide` : 'GlowGuide';
 }
 
 function notify(message: string): void {
@@ -228,12 +250,23 @@ document.addEventListener('click', event => {
 });
 
 document.addEventListener('input', event => {
-  const input = event.target; if (!(input instanceof HTMLInputElement)) return;
+  const input = event.target;
+  if (input instanceof HTMLTextAreaElement && input.form?.id === 'consultation-form') {
+    const field = consultationFields.find(field => field.id === input.name);
+    if (field) consultationDraft[field.id] = input.value;
+    return;
+  }
+  if (!(input instanceof HTMLInputElement)) return;
   if (input.id === 'home-search') {
     query = input.value; document.querySelector('#home-results')!.innerHTML = homeResults();
   } else if (input.id === 'picker-search') document.querySelector('#picker-results')!.innerHTML = pickerResults(input.value);
   else return;
   input.parentElement!.querySelector<HTMLButtonElement>('.clear-search')!.hidden = !input.value;
+});
+
+document.addEventListener('submit', event => {
+  // This prototype only collects context; Submit intentionally has no next step.
+  if (event.target instanceof HTMLFormElement && event.target.id === 'consultation-form') event.preventDefault();
 });
 
 dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(); });

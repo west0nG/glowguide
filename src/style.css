@@ -15,8 +15,8 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; min-height: 100dvh; display: grid; place-items: center; }
-button, input, a { -webkit-tap-highlight-color: transparent; }
-button, input { font: inherit; }
+button, input, textarea, a { -webkit-tap-highlight-color: transparent; }
+button, input, textarea { font: inherit; }
 button, a { touch-action: manipulation; }
 button { cursor: pointer; color: inherit; }
 button { border: 0; background: none; }
@@ -86,8 +86,9 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .card-text .eyebrow { font-size: 10px; letter-spacing: 1.4px; }
 .card-text h3 { font-size: 16px; line-height: 1.4; font-weight: 500; margin: 5px 0 3px; letter-spacing: -.15px; }
 .card-text p { font-size: 13px; line-height: 1.6; color: var(--muted); }
-.app-nav { display: grid; grid-template-columns: repeat(3, 1fr); background: #fffaf7; border-top: 1px solid var(--line); padding: 12px max(40px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(40px, env(safe-area-inset-left)); }
-.nav-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 60px; padding: 4px 0 10px; font-size: 12px; color: #918381; font-weight: 500; }
+.app-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #fffaf7; border-top: 1px solid var(--line); padding: 12px max(40px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(40px, env(safe-area-inset-left)); }
+.nav-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 0; min-height: 60px; padding: 4px 0 10px; font-size: 12px; color: #918381; font-weight: 500; }
+.consultation-nav { font-size: 11px; }
 .nav-item.active { color: var(--rose); }
 .nav-item.active::after { content: ''; position: absolute; bottom: 1px; width: 3px; height: 3px; background: var(--rose); border-radius: 50%; }
 .nav-icon { display: flex; position: relative; }
@@ -103,6 +104,15 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .primary-button:disabled { opacity: .65; }
 .full-width { width: 100%; }
 .primary-button > svg:last-child:not(:first-child) { margin-left: auto; }
+.consultation-content h1 { font-size: 28px; margin-bottom: 28px; }
+#consultation-form { max-width: 840px; }
+.consultation-fields { display: grid; gap: 24px; }
+.consultation-field { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.consultation-field label { font-size: 16px; font-weight: 500; line-height: 1.5; }
+.consultation-field textarea { display: block; width: 100%; min-height: 112px; padding: 14px 16px; border: 1px solid #dfd5cf; border-radius: 10px; background: #fffdfb; color: var(--ink); font-size: 16px; line-height: 1.6; resize: vertical; }
+.consultation-field textarea::placeholder { color: #8b807c; opacity: 1; }
+.consultation-field textarea:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 3px #89596410; }
+.consultation-submit { min-width: 160px; margin-top: 28px; }
 .detail-overview { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 32px; }
 .detail-image { position: relative; aspect-ratio: 1; min-width: 0; border-radius: 14px; overflow: hidden; }
 .detail-image .product-photo { object-position: 50% 60%; }
@@ -221,6 +231,8 @@ dialog[open] .dialog-panel { animation: appear .2s ease-out; }
   .app-nav .nav-item.active::after { display: none; }
 }
 @container app (min-width: 1000px) {
+  .consultation-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+  .consultation-field label { flex: 1; }
   .app-header { min-height: 88px; }
   .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .detail-overview { grid-template-columns: 380px minmax(0, 1fr); gap: 48px; }
@@ -228,6 +240,8 @@ dialog[open] .dialog-panel { animation: appear .2s ease-out; }
   .slot-image { height: 240px; }
 }
 @container app (max-width: 699px) {
+  .consultation-content h1 { font-size: 26px; margin-bottom: 24px; }
+  .consultation-submit { width: 100%; }
   .app-header, .main-content { --page-gutter: 24px; }
   .app-header { min-height: 80px; }
   .wordmark { font-size: 28px; }

@@ -126,7 +126,7 @@ function compare(): string {
   return `${header()}<main class="main-content compare-content" id="main" aria-label="Compare products"><div class="compare-slots">${slot(0)}${slot(1)}${a && b ? '<svg class="pair-link" aria-hidden="true" viewBox="0 0 32 24"><path class="pair-line" d="M0 12H14" pathLength="100"/><path class="pair-line" d="M32 12H18" pathLength="100"/><path class="pair-seal" d="M16 7L21 12L16 17L11 12Z"/></svg>' : ''}</div>
     ${a && b ? comparisonTable(a, b) : ''}
     ${selected.length ? `<button class="reset-comparison text-button" data-action="clear-pair">${icon('reset', 15)} Clear comparison</button>` : ''}
-    ${suggestion && suggestedProduct ? `<aside class="pair-suggestion" aria-label="GlowGuide suggestion" data-product-id="${suggestedProduct.id}" data-slot="${suggestion.slot}"><h2>GlowGuide 建议你选 ${suggestion.slot}</h2><p>${escape(suggestedProduct.name)}</p></aside>` : ''}
+    ${suggestion && suggestedProduct ? `<aside class="pair-suggestion" aria-label="GlowGuide suggestion" data-product-id="${suggestedProduct.id}" data-slot="${suggestion.slot}"><h2>GlowGuide recommends ${escape(suggestedProduct.name)}</h2><p>Recommended pick: Product ${suggestion.slot}</p></aside>` : ''}
     </main>${navigation()}`;
 }
 

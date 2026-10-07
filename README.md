@@ -62,6 +62,23 @@ Additional official product sources (reviewed October 5, 2026):
 - Fenty Beauty: [Cheeks Out Freestyle Cream Blush — Petal Poppin](https://fentybeauty.com/products/cheeks-out-freestyle-cream-blush-petal-poppin), [Gloss Bomb Universal Lip Luminizer — Fenty Glow](https://fentybeauty.com/products/gloss-bomb-universal-lip-luminizer-fenty-glow).
 
 
+## Product prices
+
+Prices are static US regular list prices in USD, checked against the official store’s matching size and shade on October 6, 2026. They appear on Discover, product details, the Compare picker, and the comparison table. Temporary discounts, tax, and shipping are excluded; prices do not update live.
+
+| Product | Sample size / shade | USD list price |
+| --- | --- | ---: |
+| Rare Beauty — [Soft Pinch Liquid Blush](https://www.rarebeauty.com/products/soft-pinch-liquid-blush?variant=43734829695111) | 7.5 ml · Hope · Nude mauve | $25.00 |
+| Rhode — [Pocket Blush](https://www.rhodeskin.com/products/pocket-blush-piggy) | 5.3 g · Piggy · Baby pink | $25.00 |
+| Fenty Beauty — [Cheeks Out Freestyle Cream Blush](https://fentybeauty.com/products/cheeks-out-freestyle-cream-blush-petal-poppin) | 3 g · Petal Poppin | $28.00 |
+| Rare Beauty — [Soft Pinch Tinted Lip Oil](https://www.rarebeauty.com/products/soft-pinch-tinted-lip-oil?variant=43734835069063) | 3 ml · Hope · Nude mauve | $24.00 |
+| Rhode — [Peptide Lip Treatment](https://www.rhodeskin.com/products/peptide-lip-treatment) | 10 ml · Clear | $20.00 |
+| Fenty Beauty — [Gloss Bomb Universal Lip Luminizer](https://fentybeauty.com/products/gloss-bomb-universal-lip-luminizer-fenty-glow) | 9 ml · Fenty Glow | $23.00 |
+| Beauty of Joseon — [Dynasty Cream](https://beautyofjoseon.com/products/dynasty-cream) | 50 ml | $24.00 |
+| Beauty of Joseon — [Glow Serum](https://beautyofjoseon.com/products/glow-serum-propolis-niacinamide) | 30 ml | $17.00 |
+| Beauty of Joseon — [Red Bean Water Gel](https://beautyofjoseon.com/products/red-bean-water-gel) | 100 ml | $18.00 |
+| Beauty of Joseon — [Green Plum Cleanser](https://beautyofjoseon.com/products/green-plum-refreshing-cleanser) | 100 ml | $13.00 |
+
 ## Deploy to Vercel
 
 Production project: `west0ngs-projects/glowguide`. The project uses `npm ci`, `npm run build`, and the `dist` output directory configured in `vercel.json`.

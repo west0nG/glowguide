@@ -33,6 +33,8 @@ const consultationDraft: Record<typeof consultationFields[number]['id'], string>
 let consultationSaved = false;
 
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+const price = (p: Product) => `<span class="product-price" aria-label="List price: ${usd.format(p.priceUsd)} USD"><span>${usd.format(p.priceUsd)}</span><small>USD</small></span>`;
 const picture = (p: Product, className = '', eager = false) => `<img class="product-photo ${p.category === 'Blush' || p.category === 'Lip' ? 'packshot' : ''} ${className}" src="${p.image}" alt="${escape(p.name)} by ${escape(p.brand)}" loading="${eager ? 'eager' : 'lazy'}" width="800" height="800" />`;
 const currentRoute = () => location.hash.replace(/^#/, '') || '/';
 const isCompare = () => currentRoute() === '/compare';
@@ -60,7 +62,7 @@ function searchField(value: string, mode: 'home' | 'picker'): string {
 function card(p: Product): string {
   return `<article class="product-card">
     <div class="card-image ${p.tone}"><a href="#/product/${p.id}" aria-label="View ${escape(p.name)}">${picture(p, '', true)}</a></div>
-    <a class="card-text" href="#/product/${p.id}"><span class="eyebrow">${p.brand}</span><h3>${p.name}</h3><p>${p.subtitle}</p></a>
+    <a class="card-text" href="#/product/${p.id}"><span class="eyebrow">${p.brand}</span><h3>${p.name}</h3><p>${p.subtitle}</p>${price(p)}</a>
   </article>`;
 }
 
@@ -83,7 +85,7 @@ function detail(p: Product): string {
   const glossary = p.ingredients.filter(i => i.korean);
   return `${header(true, 'Product notes')}<main class="main-content detail-content" id="main">
     <div class="detail-overview"><div class="detail-image ${p.tone}">${picture(p, '', true)}<span class="image-caption">${p.category} · ${p.size}</span></div>
-    <div class="product-intro"><p class="eyebrow">${p.brand}</p><h1>${p.name}</h1><p class="product-subtitle">${p.subtitle}</p><p class="product-description">${p.description}</p></div></div>
+    <div class="product-intro"><p class="eyebrow">${p.brand}</p><h1>${p.name}</h1><p class="product-subtitle">${p.subtitle}</p><div class="detail-price">${price(p)}<small>List price · ${p.size}</small></div><p class="product-description">${p.description}</p></div></div>
     <section class="detail-section"><div class="section-heading"><h2>At a glance</h2><span class="tiny-label">01</span></div><dl class="glance-grid"><div><dt>Texture</dt><dd>${p.texture}</dd></div><div><dt>Finish</dt><dd>${p.finish}</dd></div><div class="wide"><dt>Focus</dt><dd>${p.focus}</dd></div></dl></section>
     <section class="detail-section"><div class="section-heading"><h2>What’s inside</h2><span class="tiny-label">02</span></div><div class="ingredients">${p.ingredients.map((item, index) => `<div class="ingredient"><span class="ingredient-number">0${index + 1}</span><div class="ingredient-content"><div class="ingredient-heading"><h3>${item.name}</h3><span class="ingredient-origin" aria-label="Ingredient origin: ${ingredientOriginLabels[item.origin]}">${ingredientOriginLabels[item.origin]}</span></div><p>${item.note}</p></div></div>`).join('')}</div></section>
     ${glossary.length ? `<details class="label-notes"><summary><span class="label-icon">${icon('language')}</span><span><strong>Read the label</strong><small>Korean → English</small></span>${icon('down', 18)}</summary><div class="glossary"><p class="glossary-caption">Example ingredient terms</p>${glossary.map(i => `<div class="glossary-row"><span lang="ko">${i.korean}</span><span>${i.name}</span></div>`).join('')}</div></details>` : ''}
@@ -108,6 +110,7 @@ function comparisonTable(a: Product, b: Product): string {
     ['Size', a.size, b.size],
   ];
   if (a.shade || b.shade) rows.splice(1, 0, ['Shade', a.shade || '—', b.shade || '—']);
+  rows.unshift(['List price (USD)', usd.format(a.priceUsd), usd.format(b.priceUsd)]);
   const result = recommend(a, b);
   return `<section class="comparison-section"><table class="comparison-table"><caption class="sr-only">Comparison of ${a.name} and ${b.name}</caption><thead class="sr-only"><tr><th scope="col">${a.name}</th><th scope="col">${b.name}</th></tr></thead>${rows.map(([label, left, right]) => `<tbody><tr><th colspan="2" scope="rowgroup">${label}</th></tr><tr><td>${left}</td><td>${right}</td></tr></tbody>`).join('')}</table></section>
     <aside class="recommendation" aria-label="Product recommendations">${result.text ? `<p>${result.text}</p>` : ''}<div class="recommendation-options">${result.notes.map(note => `<p><strong>${note.name}</strong><span>${note.text}</span></p>`).join('')}</div></aside>`;
@@ -190,7 +193,7 @@ function pickerResults(value: string): string {
   const result = searchProducts(value);
   return result.length ? result.map(p => {
     const unavailable = selected.some((id, index) => id === p.id && index !== pickerIndex);
-    return `<button class="picker-product" data-action="pick" data-id="${p.id}" ${unavailable ? 'disabled' : ''}><span class="picker-image">${picture(p)}</span><span class="picker-info"><small>${p.brand}</small><strong>${p.name}</strong><span>${unavailable ? 'Already selected' : p.subtitle}</span></span>${icon(unavailable ? 'check' : 'plus', 18)}</button>`;
+    return `<button class="picker-product" data-action="pick" data-id="${p.id}" ${unavailable ? 'disabled' : ''}><span class="picker-image">${picture(p)}</span><span class="picker-info"><small>${p.brand}</small><strong>${p.name}</strong><span>${unavailable ? 'Already selected' : p.subtitle}</span>${price(p)}</span>${icon(unavailable ? 'check' : 'plus', 18)}</button>`;
   }).join('') : '<div class="picker-empty"><p>No matching products.</p><small>Try a product name or ingredient.</small></div>';
 }
 

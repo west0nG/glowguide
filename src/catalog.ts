@@ -12,6 +12,8 @@ export type Product = {
   category: Exclude<Category, 'All'>;
   size: string;
   shade?: string;
+  /** USD regular list price for this size/shade, checked on 2026-10-06. */
+  priceUsd: number;
   image: string;
   tone: string;
   description: string;
@@ -32,6 +34,7 @@ export const categories: Category[] = ['All', 'Blush', 'Lip', 'Moisturizer', 'Se
 export const products: Product[] = [
   {
     id: 'rare-blush', name: 'Soft Pinch Liquid Blush', subtitle: 'Hope · Nude mauve',
+    priceUsd: 25,
     brand: 'Rare Beauty', category: 'Blush', size: '7.5 ml', shade: 'Hope · Nude mauve', tone: 'rose',
     image: '/images/rare-blush.jpg',
     description: 'A liquid blush with concentrated color. Hope has a dewy finish.',
@@ -47,6 +50,7 @@ export const products: Product[] = [
   },
   {
     id: 'rhode-blush', name: 'Pocket Blush', subtitle: 'Piggy · Baby pink',
+    priceUsd: 25,
     brand: 'Rhode', category: 'Blush', size: '5.3 g', shade: 'Piggy · Baby pink', tone: 'rose',
     image: '/images/rhode-blush.png',
     description: 'A cream blush stick for cheeks and lips, with color that builds in layers.',
@@ -62,6 +66,7 @@ export const products: Product[] = [
   },
   {
     id: 'fenty-blush', name: 'Cheeks Out Freestyle Cream Blush', subtitle: 'Petal Poppin',
+    priceUsd: 28,
     brand: 'Fenty Beauty', category: 'Blush', size: '3 g', shade: 'Petal Poppin', tone: 'rose',
     image: '/images/fenty-blush.jpg',
     description: 'A cream blush in a compact, with sheer color that can be built up.',
@@ -77,6 +82,7 @@ export const products: Product[] = [
   },
   {
     id: 'rare-lip-oil', name: 'Soft Pinch Tinted Lip Oil', subtitle: 'Hope · Nude mauve',
+    priceUsd: 24,
     brand: 'Rare Beauty', category: 'Lip', size: '3 ml', shade: 'Hope · Nude mauve', tone: 'rose',
     image: '/images/rare-lip-oil.jpg',
     description: 'A lip gel that becomes an oil, leaving a tint as the initial gloss wears down.',
@@ -91,6 +97,7 @@ export const products: Product[] = [
   },
   {
     id: 'rhode-lip', name: 'Peptide Lip Treatment', subtitle: 'Unscented',
+    priceUsd: 20,
     brand: 'Rhode', category: 'Lip', size: '10 ml', shade: 'Clear', tone: 'cream',
     image: '/images/rhode-lip.png',
     description: 'An unscented lip treatment for moisture and a clear gloss finish.',
@@ -106,6 +113,7 @@ export const products: Product[] = [
   },
   {
     id: 'fenty-gloss', name: 'Gloss Bomb Universal Lip Luminizer', subtitle: 'Fenty Glow',
+    priceUsd: 23,
     brand: 'Fenty Beauty', category: 'Lip', size: '9 ml', shade: 'Fenty Glow', tone: 'honey',
     image: '/images/fenty-gloss.jpg',
     description: 'A sheer lip gloss with shimmer, shine and a peach-vanilla scent.',
@@ -121,6 +129,7 @@ export const products: Product[] = [
   },
   {
     id: 'dynasty-cream', name: 'Dynasty Cream', subtitle: 'Rice & ginseng',
+    priceUsd: 24,
     brand: 'Beauty of Joseon', category: 'Moisturizer', size: '50 ml', tone: 'cream',
     image: '/images/dynasty-cream.webp',
     description: 'A nourishing daily cream for lasting moisture and a soft, dewy finish.',
@@ -137,6 +146,7 @@ export const products: Product[] = [
   },
   {
     id: 'glow-serum', name: 'Glow Serum', subtitle: 'Propolis & niacinamide',
+    priceUsd: 17,
     brand: 'Beauty of Joseon', category: 'Serum', size: '30 ml', tone: 'honey',
     image: '/images/glow-serum-propolis-niacinamide.webp',
     description: 'A cushiony serum that hydrates and helps refine the look of pores and uneven texture.',
@@ -152,6 +162,7 @@ export const products: Product[] = [
   },
   {
     id: 'red-bean-gel', name: 'Red Bean Water Gel', subtitle: 'Red bean & peptides',
+    priceUsd: 18,
     brand: 'Beauty of Joseon', category: 'Moisturizer', size: '100 ml', tone: 'rose',
     image: '/images/red-bean-water-gel.webp',
     description: 'A fresh, lightweight moisturizer for oily or combination skin that prefers a lighter feel.',
@@ -166,6 +177,7 @@ export const products: Product[] = [
   },
   {
     id: 'green-plum-cleanser', name: 'Green Plum Cleanser', subtitle: 'Plum & mung bean',
+    priceUsd: 13,
     brand: 'Beauty of Joseon', category: 'Cleanser', size: '100 ml', tone: 'sage',
     image: '/images/green-plum-refreshing-cleanser.webp',
     description: 'A gentle, pH-balanced daily cleanser that leaves skin feeling refreshed and soft.',

@@ -9,6 +9,7 @@ import { icon } from './icons';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 const dialog = document.querySelector<HTMLDialogElement>('#modal')!;
+const dialogPanel = dialog.querySelector<HTMLDivElement>('.dialog-panel')!;
 const toast = document.querySelector<HTMLDivElement>('#toast')!;
 let query = '';
 let category: Category = 'All';
@@ -137,7 +138,7 @@ function updateSelection(id: string, replacement?: number): boolean {
 
 function closeDialog(): void {
   clearTimeout(scanTimer); scanning = false; dialogMode = null;
-  dialog.close(); dialog.innerHTML = ''; dialog.className = '';
+  dialog.close(); dialogPanel.innerHTML = ''; dialog.className = '';
   if (dialogOrigin?.isConnected) dialogOrigin.focus();
   else app.querySelector<HTMLElement>(isCompare() ? '.change-button, .empty-slot' : '.scan-entry, .back-button')?.focus();
 }
@@ -145,7 +146,21 @@ function closeDialog(): void {
 function openDialog(mode: 'scan' | 'picker'): void {
   if (!dialog.open) dialogOrigin = document.activeElement instanceof HTMLElement ? document.activeElement : null;
   dialogMode = mode; dialog.className = mode === 'scan' ? 'scan-dialog' : 'picker-dialog';
+  fitDialogToApp();
   if (!dialog.open) dialog.showModal();
+}
+
+// Native modal dialogs leave their parent's layout, so explicitly share the app frame.
+function fitDialogToApp(): void {
+  const bounds = app.getBoundingClientRect();
+  const styles = getComputedStyle(app);
+  const scale = parseFloat(styles.zoom) || 1;
+  dialog.style.zoom = String(scale);
+  dialog.style.left = `${bounds.left / scale}px`;
+  dialog.style.top = `${bounds.top / scale}px`;
+  dialog.style.width = `${bounds.width / scale}px`;
+  dialog.style.height = `${bounds.height / scale}px`;
+  dialog.style.borderRadius = styles.borderRadius;
 }
 
 function pickerResults(value: string): string {
@@ -158,7 +173,7 @@ function pickerResults(value: string): string {
 
 function openPicker(index: number): void {
   pickerIndex = index; openDialog('picker');
-  dialog.innerHTML = `<div class="sheet-handle"></div><div class="dialog-heading"><div><p class="eyebrow">PRODUCT ${index + 1} OF 2</p><h2 id="modal-title">${selected[index] ? 'Change product' : 'Find a product'}</h2></div><button class="icon-button" data-action="close-dialog" aria-label="Close product picker">${icon('close')}</button></div>${searchField('', 'picker')}<div id="picker-results" class="picker-list">${pickerResults('')}</div>`;
+  dialogPanel.innerHTML = `<div class="sheet-handle"></div><div class="dialog-heading"><div><p class="eyebrow">PRODUCT ${index + 1} OF 2</p><h2 id="modal-title">${selected[index] ? 'Change product' : 'Find a product'}</h2></div><button class="icon-button" data-action="close-dialog" aria-label="Close product picker">${icon('close')}</button></div>${searchField('', 'picker')}<div id="picker-results" class="picker-list">${pickerResults('')}</div>`;
   dialog.querySelector<HTMLInputElement>('input')?.focus();
 }
 
@@ -171,7 +186,7 @@ function openScan(): void {
 
 function renderScan(): void {
   const p = getProduct(scanId)!;
-  dialog.innerHTML = `<div class="dialog-heading"><h2 id="modal-title">Scan a product</h2><button class="icon-button" data-action="close-dialog" aria-label="Close scanner">${icon('close')}</button></div>
+  dialogPanel.innerHTML = `<div class="dialog-heading"><h2 id="modal-title">Scan a product</h2><button class="icon-button" data-action="close-dialog" aria-label="Close scanner">${icon('close')}</button></div>
     <div class="scan-view ${scanning ? 'is-scanning' : ''}"><span class="sample-badge">SAMPLE SCAN</span>${picture(p, '', true)}<div class="scan-corners"><i></i><i></i><i></i><i></i>${scanning ? '<div class="scan-line"></div>' : ''}</div>${scanning ? '<span class="scan-caption">Reading product details…</span>' : ''}</div>
     <p class="scan-product-name" role="status">${p.name}</p><div class="scan-samples" role="group" aria-label="Choose a sample product">${products.map(item => `<button data-action="scan-sample" data-id="${item.id}" class="sample-thumb ${item.id === scanId ? 'selected' : ''}" aria-label="Use ${escape(item.name)} sample" aria-pressed="${item.id === scanId}" ${scanning ? 'disabled' : ''}>${picture(item)}</button>`).join('')}</div>
     <button class="primary-button full-width" data-action="run-scan" ${scanning ? 'disabled' : ''}>${icon('scan', 20)}${scanning ? 'Reading label…' : 'Scan this sample'}</button>`;
@@ -235,9 +250,7 @@ dialog.addEventListener('keydown', event => {
   }
 });
 dialog.addEventListener('click', event => {
-  if (event.target !== dialog) return;
-  const r = dialog.getBoundingClientRect();
-  if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) closeDialog();
+  if (event.target === dialog) closeDialog();
 });
 window.addEventListener('hashchange', () => {
   if (dialog.open) closeDialog();
@@ -253,7 +266,13 @@ function fitTabletPreview(): void {
   const height = parseFloat(styles.getPropertyValue('--tablet-height'));
   const scale = Math.min(1, (window.innerWidth - 48) / width, (window.innerHeight - 48) / height);
   app.style.setProperty('--preview-scale', String(Math.max(0.1, scale)));
+  if (dialog.open) fitDialogToApp();
 }
 window.addEventListener('resize', fitTabletPreview);
+const syncOpenDialog = () => { if (dialog.open) fitDialogToApp(); };
+new ResizeObserver(syncOpenDialog).observe(app);
+window.addEventListener('scroll', syncOpenDialog, { passive: true });
+window.visualViewport?.addEventListener('resize', syncOpenDialog);
+window.visualViewport?.addEventListener('scroll', syncOpenDialog);
 fitTabletPreview();
 render();

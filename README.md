@@ -22,11 +22,13 @@ npm run preview
 
 Node 22.13+ or 24+ is recommended for the TypeScript test runner. The current workspace was verified with Node 23.9.
 
+For browser layout checks, `tests/dialog-layout.browser.mjs` exports `checkDialogLayout(page, baseUrl)`, using an Ego Browser Page and a URL that defaults to `http://localhost:5173/`. It verifies Scan and picker bounds across seven desktop/tablet/phone sizes, resizing while open, keyboard dismissal/focus, and scan/comparison independence. The caller creates and finishes the browser task space. This browser check runs separately from `npm test`.
+
 ## Layout
 
 The reference canvas is the 11-inch iPad: **820 × 1180 CSS pixels** in portrait and **1180 × 820** in landscape. On touch devices, the app fills the available browser viewport, including safe-area spacing. Portrait uses three product columns; landscape uses four, with larger text and controls throughout.
 
-On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and navigation stay in place while the content scrolls. At app widths of 768px and above, Discover, Scan, and Compare sit in a 96px left navigation rail; narrower layouts use bottom navigation. The selected page has a pale pink background in the rail, and Scan opens the existing scanner dialog. Smaller touch screens retain a two-column fallback.
+On desktop, the preview keeps the iPad proportions and scales uniformly to fit the window, choosing the orientation that suits its aspect ratio. The header and navigation stay in place while the content scrolls. At app widths of 768px and above, Discover, Scan, and Compare sit in a 96px left navigation rail; narrower layouts use bottom navigation. The selected page has a pale pink background in the rail, and Scan opens the existing scanner dialog. Smaller touch screens retain a two-column fallback. Scan and product-picker dialogs use the same canvas bounds and scale as the app; their dimmed backdrop stays inside the frame, including while resizing. Narrow screens keep the product picker as a bottom sheet.
 
 ## Try the prototype
 
